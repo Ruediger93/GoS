@@ -50,6 +50,7 @@ Menu:MenuElement({type = MENU, id = "Draw", name = "Drawing Settings"})
 Menu.Draw:MenuElement({id = "DrawQ", name = "Draw Q", value = true})
 Menu.Draw:MenuElement({id = "DrawW", name = "Draw W", value = true})
 Menu.Draw:MenuElement({id = "DrawR", name = "Draw R", value = true})
+Menu.Draw:MenuElement({id = "DrawTarget", name = "Draw Target", value = true})
 
 
 -- [Checks]
@@ -88,18 +89,14 @@ Callback.Add('Tick',function()
 			local qTarget = GetTarget(Q.Range * Menu.Misc.MaxRange:Value())
 			if qTarget and qTarget:GetCollision(Q.Radius, Q.Speed, Q.Delay) == 0 then
 				local qPos = qTarget:GetPrediction(Q.Speed, Q.Delay)
-				if true or true then
-					Control.CastSpell("Q", qPos)
-				end
+				Control.CastSpell("Q", qPos)
 			end
 		end
 		if isReady(_W) and Menu.Combo.ComboW:Value() then
 			local wTarget = GetTarget(W.Range * Menu.Misc.MaxRange:Value())
 			if wTarget then
 				local wPos = wTarget:GetPrediction(W.Speed, W.Delay)
-				if true or true then
-					Control.CastSpell("W", wPos)
-				end
+				Control.CastSpell("W", wPos)
 			end
 		end
 		-- if isReady(_R) and Menu.Combo.ComboR:Value() then
@@ -118,18 +115,14 @@ Callback.Add('Tick',function()
 			local qTarget = GetTarget(Q.Range * Menu.Misc.MaxRange:Value())
 			if qTarget and qTarget:GetCollision(Q.Radius, Q.Speed, Q.Delay) == 0 then
 				local qPos = qTarget:GetPrediction(Q.Speed, Q.Delay)
-				if true or true then
-					Control.CastSpell("Q", qPos)
-				end
+				Control.CastSpell("Q", qPos)
 			end
 		end
 		if isReady(_W) and Menu.Harass.HarassW:Value() then
 			local wTarget = GetTarget(W.Range * Menu.Misc.MaxRange:Value())
 			if wTarget then
 				local wPos = wTarget:GetPrediction(W.Speed, W.Delay)
-				if true or true then
-					Control.CastSpell("W", wPos)
-				end
+				Control.CastSpell("W", wPos)
 			end
 		end
 	end
@@ -139,9 +132,7 @@ Callback.Add('Tick',function()
 			local qMinion = GetFarmTarget(Q.Range * Menu.Misc.MaxRange:Value())
 			if qMinion then
 				local qMinPos = qMinion:GetPrediction(Q.Speed, Q.Delay)
-				if true or true then
-					Control.CastSpell("Q", qMinPos)
-				end
+				Control.CastSpell("Q", qMinPos)
 			end
 		end
 	end
@@ -167,10 +158,12 @@ function OnDraw()
 		Draw.Circle(myHero.pos,R.Range * Menu.Misc.MaxRange:Value(),1,Draw.Color(255, 255, 255, 255))
 	end
 
-	local drawTarget = GetTarget(Q.Range)
-	if drawTarget then
-		Draw.Circle(drawTarget.pos,80,3,Draw.Color(255, 255, 0, 0))
-	end
+    if Menu.Draw.DrawTarget:Value() then
+	    local drawTarget = GetTarget(Q.Range)
+	    if drawTarget then
+		    Draw.Circle(drawTarget.pos,80,3,Draw.Color(255, 255, 0, 0))
+	    end
+    end
 end
 
 
