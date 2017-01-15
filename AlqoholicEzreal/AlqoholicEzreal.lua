@@ -89,14 +89,14 @@ Callback.Add('Tick',function()
 			local qTarget = GetTarget(Q.Range * Menu.Misc.MaxRange:Value())
 			if qTarget and qTarget:GetCollision(Q.Radius, Q.Speed, Q.Delay) == 0 then
 				local qPos = qTarget:GetPrediction(Q.Speed, Q.Delay)
-				Control.CastSpell("Q", qPos)
+				Control.CastSpell(HK_Q, qPos)
 			end
 		end
 		if isReady(_W) and Menu.Combo.ComboW:Value() then
 			local wTarget = GetTarget(W.Range * Menu.Misc.MaxRange:Value())
 			if wTarget then
 				local wPos = wTarget:GetPrediction(W.Speed, W.Delay)
-				Control.CastSpell("W", wPos)
+				Control.CastSpell(HK_W, wPos)
 			end
 		end
 		-- if isReady(_R) and Menu.Combo.ComboR:Value() then
@@ -104,7 +104,7 @@ Callback.Add('Tick',function()
 		-- 	if rTarget then
 		-- 		local rPos = rTarget:GetPrediction(R.Speed, R.Delay)
 		-- 		if true or true then
-		-- 			Control.CastSpell("R", rPos)
+		-- 			Control.CastSpell(HK_R, rPos)
 		-- 		end
 		-- 	end
 		-- end
@@ -115,14 +115,14 @@ Callback.Add('Tick',function()
 			local qTarget = GetTarget(Q.Range * Menu.Misc.MaxRange:Value())
 			if qTarget and qTarget:GetCollision(Q.Radius, Q.Speed, Q.Delay) == 0 then
 				local qPos = qTarget:GetPrediction(Q.Speed, Q.Delay)
-				Control.CastSpell("Q", qPos)
+				Control.CastSpell(HK_Q, qPos)
 			end
 		end
 		if isReady(_W) and Menu.Harass.HarassW:Value() then
 			local wTarget = GetTarget(W.Range * Menu.Misc.MaxRange:Value())
 			if wTarget then
 				local wPos = wTarget:GetPrediction(W.Speed, W.Delay)
-				Control.CastSpell("W", wPos)
+				Control.CastSpell(HK_W, wPos)
 			end
 		end
 	end
@@ -132,7 +132,7 @@ Callback.Add('Tick',function()
 			local qMinion = GetFarmTarget(Q.Range * Menu.Misc.MaxRange:Value())
 			if qMinion then
 				local qMinPos = qMinion:GetPrediction(Q.Speed, Q.Delay)
-				Control.CastSpell("Q", qMinPos)
+				Control.CastSpell(HK_Q, qMinPos)
 			end
 		end
 	end
