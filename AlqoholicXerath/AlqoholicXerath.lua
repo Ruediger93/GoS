@@ -99,6 +99,7 @@ function AlqoholicXerath:Tick()
 	-- [ULT]
 	if self.Menu.Combo.ComboR:Value() then
 		self:CastR()
+	end
 
 	-- [HARASS]
 	if self.Menu.Key.HarassKey:Value() and (myHero.mana/myHero.maxMana >= self.Menu.Harass.HarassMana:Value()/100) then
