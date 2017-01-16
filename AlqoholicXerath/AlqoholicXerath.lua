@@ -97,8 +97,13 @@ function AlqoholicXerath:Tick()
 	end
 
 	-- [ULT]
-	if self.Menu.Combo.ComboR:Value() then
-		self:CastR()
+	if self.Menu.Combo.ComboR:Value() and self:CanCast(_R) then
+		Control.CastSpell(HK_R)
+		DelayAction(
+			function()
+				self:CastR()
+			end,
+		1)
 	end
 
 	-- [HARASS]
@@ -124,10 +129,6 @@ function AlqoholicXerath:DoCombo()
 
 	if self.Menu.Combo.ComboE:Value() and self:CanCast(_E) then
 		self:CastE()
-	end
-
-	if self.Menu.Combo.ComboR:Value() and self:CanCast(_R) then
-		self:CastR()
 	end
 end
 
@@ -158,11 +159,11 @@ function AlqoholicXerath:CastQ(objType)
 		if target then
 			local castPos = target:GetPrediction(Q.Speed, Q.Delay)
 
-			if myHero.pos:DistanceTo(castPos) <= 700 then
+			if myHero.pos:DistanceTo(castPos) <= 400 then
 				Control.CastSpell(HK_Q, castPos)
 			end
-			if myHero.pos:DistanceTo(castPos) > 700 then
-				local time = (myHero.pos:DistanceTo(castPos) - 700) / 0.53
+			if myHero.pos:DistanceTo(castPos) > 400 then
+				local time = (myHero.pos:DistanceTo(castPos) - 700) / 0.3
 				Control.KeyDown(HK_Q)
 				DelayAction(
 					function()
@@ -178,7 +179,7 @@ function AlqoholicXerath:CastQ(objType)
 		local target = self:GetFarmTarget(Q.Range * self.Menu.Misc.MaxRange:Value())
 		if target then
 			local castPos = target:GetPrediction(Q.Speed, Q.Delay)
-			local time = myHero.pos:DistanceTo(castPos) / 0.53
+			local time = myHero.pos:DistanceTo(castPos) / 0.3
 			Control.KeyDown(HK_Q)
 			DelayAction(
 				function()
@@ -217,28 +218,18 @@ function AlqoholicXerath:CastE()
 end
 
 function AlqoholicXerath:CastR()
-	local target = self:GetTarget(R.Range * self.Menu.Misc.MaxRange:Value())
+	local target = self:GetTarget(2000)
 	if target then
-		local castPos = target.posMM
-
-		local casting = false
-		local buff = "xerathrshots"
+		local castPos = target:GetPrediction(Q.Speed, Q.Delay)
 		local rCount = myHero:GetSpellData(_R).level + 2
 
-		for i=1,myHero.buffCount do
-			local j = myHero:GetBuff(i)
-			if j.name == buff then
-				casting = true
-			end
-			break
+		for y=1,rCount do
+			DelayAction(
+				function()
+					Control.CastSpell(HK_R, castPos)
+				end,
+			1)
 		end
-
-		if casting then
-			for y=1,rCount do
-				DelayAction(function() Control.CastSpell(HK_R, castPos) end, 1)
-			end
-		end
-
 	end
 end
 
