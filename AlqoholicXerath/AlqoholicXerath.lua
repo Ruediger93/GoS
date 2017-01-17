@@ -23,7 +23,7 @@ function AlqoholicXerath:LoadSpells()
 end
 
 function AlqoholicXerath:LoadMenu()
-	self.Menu = MenuElement({type = MENU, id = "AlqoholicXerath", name = "Alqohol - AlqoholicXerath"})
+	self.Menu = MenuElement({type = MENU, id = "AlqoholicXerath", name = "Alqohol - AlqoholicXerath", lefticon="https://cdn.discordapp.com/emojis/249237025754972171.png"})
 
 	-- [[Keys]]
 	self.Menu:MenuElement({type = MENU, id = "Key", name = "Key Settings"})

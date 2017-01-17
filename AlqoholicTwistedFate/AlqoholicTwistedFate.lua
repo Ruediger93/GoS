@@ -20,7 +20,7 @@ function AlqoholicTwistedFate:LoadSpells()
 end
 
 function AlqoholicTwistedFate:LoadMenu()
-	self.Menu = MenuElement({type = MENU, id = "AlqoholicTwistedFate", name = "Alqohol - AlqoholicTwistedFate"})
+	self.Menu = MenuElement({type = MENU, id = "AlqoholicTwistedFate", name = "Alqohol - AlqoholicTwistedFate", lefticon="https://cdn.discordapp.com/emojis/249237025754972171.png"})
 
 	--[[Combo]]
 	self.Menu:MenuElement({type = MENU, id = "Combo", name = "Combo Settings"})

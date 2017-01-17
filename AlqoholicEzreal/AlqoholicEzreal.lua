@@ -8,7 +8,7 @@ W = {Delay = 0.25, Radius = 80, Range = 1000, Speed = 2000, Collision = false}
 R = {Delay = 0.25, Radius = 160, Range = 3000, Speed = 2000, Collision = false}
 
 -- Menu
-Menu = MenuElement({type = MENU, id = "AlqoholicEzreal", name = "Alqohol - AlqoholicEzreal"})
+Menu = MenuElement({type = MENU, id = "AlqoholicEzreal", name = "Alqohol - AlqoholicEzreal", lefticon="https://cdn.discordapp.com/emojis/249237025754972171.png"})
 
 -- [[Keys]]
 Menu:MenuElement({type = MENU, id = "Key", name = "Key Settings"})
