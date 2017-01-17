@@ -1,5 +1,9 @@
 class "AlqoholicXerath"
 
+local _castingUlt = false
+local _chargingQ = false
+local _ultStacks = 0
+
 function AlqoholicXerath:__init()
 	if myHero.charName ~= "Xerath" then return end
 	require('DamageLib')
@@ -91,6 +95,23 @@ function AlqoholicXerath:Tick()
 
 	R.Range = 1200 * myHero:GetSpellData(_R).level + 2000
 
+	if Utility:HasBuff(myHero, "XerathLocusOfPower2") then _castingUlt =  true else _castingUlt = false end
+	if Utility:HasBuff(myHero, "xerathArcanopulseChargeUp") then _chargingQ = true else _chargingQ = false end
+	if Utility:HasBuff(myHero, "xerathrshots") then _ultStacks = Utility:BuffStacks(myHero, "xerathrshots") else _ultStacks = 0 end
+
+	if _castingUlt then
+		for i=1,_ultStacks do
+			DelayAction(
+				function()
+					self:CastR()
+				end,
+			0.75)
+		end
+		_castingUlt = false
+		_ultStacks = 0
+	end
+
+
 	-- [COMBO]
 	if self.Menu.Key.ComboKey:Value() then
 		self:DoCombo()
@@ -159,16 +180,18 @@ function AlqoholicXerath:CastQ(objType)
 		if target then
 			local castPos = target:GetPrediction(Q.Speed, Q.Delay)
 
-			if myHero.pos:DistanceTo(castPos) <= 400 then
+			if castPos:DistanceTo(myHero) <= 400 then
 				Control.CastSpell(HK_Q, castPos)
 			end
-			if myHero.pos:DistanceTo(castPos) > 400 then
-				local time = (myHero.pos:DistanceTo(castPos) - 400) / 0.3
+			if castPos:DistanceTo(myHero) > 400 then
+				local distance = castPos:DistanceTo(myHero)
+				local speed = 800 / 1.5
+				local time = (distance / speed)
 				Control.KeyDown(HK_Q)
+				PrintChat(distance)
 				DelayAction(
 					function()
-						Control.SetCursorPos(castPos)
-						Control.KeyUp(HK_Q)
+						Control.CastSpell(HK_Q, castPos)
 					end, 
 				time)
 			end
@@ -180,16 +203,18 @@ function AlqoholicXerath:CastQ(objType)
 		if target then
 			local castPos = target:GetPrediction(Q.Speed, Q.Delay)
 
-			if myHero.pos:DistanceTo(castPos) <= 400 then
+			if castPos:DistanceTo(myHero) <= 400 then
 				Control.CastSpell(HK_Q, castPos)
 			end
-			if myHero.pos:DistanceTo(castPos) > 400 then
-				local time = (myHero.pos:DistanceTo(castPos) - 400) / 0.3
+			if castPos:DistanceTo(myHero) > 400 then
+				local distance = castPos:DistanceTo(myHero)
+				local speed = 800 / 1.5
+				local time = (distance / speed)
 				Control.KeyDown(HK_Q)
+				PrintChat(time)
 				DelayAction(
 					function()
-						Control.SetCursorPos(castPos)
-						Control.KeyUp(HK_Q)
+						Control.CastSpell(HK_Q, castPos)
 					end, 
 				time)
 			end
@@ -225,17 +250,15 @@ end
 
 function AlqoholicXerath:CastR()
 	local target = self:GetTarget(2000)
-	if target then
+	if target and Utility:IsValidTarget(target, 2000) then
 		local castPos = target:GetPrediction(Q.Speed, Q.Delay)
-		local rCount = myHero:GetSpellData(_R).level + 2
+		self:Fire(castPos, rCount)
+	end
+end
 
-		for y=1,rCount do
-			DelayAction(
-				function()
-					Control.CastSpell(HK_R, castPos)
-				end,
-			1)
-		end
+function AlqoholicXerath:Fire(target, rCount)
+	if target then
+		Control.CastSpell(HK_R, target)
 	end
 end
 
@@ -279,3 +302,40 @@ end
 function OnLoad()
 	AlqoholicXerath()
 end
+
+class "Utility"
+
+function Utility:HasBuff(unit, buffname)
+	for K, Buff in pairs(self:GetBuffs(unit)) do
+		if Buff.name:lower() == buffname:lower() then
+			return true
+		end
+	end
+	return false
+end
+
+function Utility:GetBuffs(unit)
+	self.T = {}
+	for i = 0, unit.buffCount do
+		local Buff = unit:GetBuff(i)
+		if Buff.count > 0 then
+			table.insert(self.T, Buff)
+		end
+	end
+	return self.T
+end
+
+function Utility:BuffStacks(unit, buffname)
+	for K, Buff in pairs(self:GetBuffs(unit)) do
+		if Buff.name:lower() == buffname:lower() then
+			return Buff.stacks
+		end
+	end
+	return 0
+end
+
+function Utility:IsValidTarget(obj, spellRange)
+	return obj ~= nil and obj.valid and obj.visible and not obj.dead and obj.isTargetable and obj.distance <= spellRange
+end
+
+Utility()
