@@ -13,7 +13,7 @@ end
 function AlqoholicXerath:LoadSpells()
 	Q = {Range = 1550, Delay = 0.6, Speed = 1337000, Radius = 95, Collision = false}
 	W = {Range = 1200, Delay = 0.7, Speed = 1337000, Radius = 125, Collision = false}
-	E = {Range = 1150, Delay = 0.25, Speed = 1400, Radius = 60, Collision = true}
+	E = {Range = 1000, Delay = 0.25, Speed = 1400, Radius = 60, Collision = true}
 	R = {Range = 0, Delay = 0.7, Speed = 1337000, Radius = 130, Collision = false}
 	PrintChat("[AlqoholicXerath] Spells Loaded")
 end
@@ -163,7 +163,7 @@ function AlqoholicXerath:CastQ(objType)
 				Control.CastSpell(HK_Q, castPos)
 			end
 			if myHero.pos:DistanceTo(castPos) > 400 then
-				local time = (myHero.pos:DistanceTo(castPos) - 700) / 0.3
+				local time = (myHero.pos:DistanceTo(castPos) - 400) / 0.3
 				Control.KeyDown(HK_Q)
 				DelayAction(
 					function()
@@ -179,7 +179,12 @@ function AlqoholicXerath:CastQ(objType)
 		local target = self:GetFarmTarget(Q.Range * self.Menu.Misc.MaxRange:Value())
 		if target then
 			local castPos = target:GetPrediction(Q.Speed, Q.Delay)
-			local time = myHero.pos:DistanceTo(castPos) / 0.3
+
+			if myHero.pos:DistanceTo(castPos) <= 400 then
+				Control.CastSpell(HK_Q, castPos)
+			end
+			if myHero.pos:DistanceTo(castPos) > 400 then
+				local time = (myHero.pos:DistanceTo(castPos) - 400) / 0.3
 			Control.KeyDown(HK_Q)
 			DelayAction(
 				function()
