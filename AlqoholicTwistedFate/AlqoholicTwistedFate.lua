@@ -1,5 +1,9 @@
 class "AlqoholicTwistedFate"
 
+local _pickingCard = false
+local _currentCard
+local _card
+
 function AlqoholicTwistedFate:__init()
 	if myHero.charName ~= "TwistedFate" then return end
 	require('DamageLib')
@@ -20,9 +24,10 @@ function AlqoholicTwistedFate:LoadMenu()
 
 	--[[Combo]]
 	self.Menu:MenuElement({type = MENU, id = "Combo", name = "Combo Settings"})
-	self.Menu.Combo:MenuElement({id = "ComboQ", name = "Use Q", value = true, too})
+	self.Menu.Combo:MenuElement({id = "ComboQ", name = "Use Q", value = true})
 	self.Menu.Combo:MenuElement({id = "ComboW", name = "Use W", value = true})
-
+	self.Menu.Combo:MenuElement({id = "GoldWhenUlt", name = "Pick Gold on Ult", value = true})
+	self.Menu.Combo:MenuElement({id = "UltKey", name = "Ultimate Key", key = 82})
 
 	--[[Harass]]
 	self.Menu:MenuElement({type = MENU, id = "Harass", name = "Harass Settings"})
@@ -37,13 +42,13 @@ function AlqoholicTwistedFate:LoadMenu()
 
 	--[[W Mode]]
 	self.Menu:MenuElement({type = MENU, id = "WSettings", name = "W Settings"})
-	self.Menu.WSettings:MenuElement({id = "ComboCard", name = "Combo Card", drop = {"Gold"[, "Red", "Blue"]}})
-	self.Menu.WSettings:MenuElement({id = "HarassCard", name = "Harass Card", drop = {"Red"[, "Gold", "Blue"]}})
-	self.Menu.WSettings:MenuElement({id = "FarmCard", name = "Farm Card", drop = {"Red"[, "Gold", "Blue"]}})
+	self.Menu.WSettings:MenuElement({id = "ComboCard", name = "Combo Card [?]", drop = {"Gold", "Red", "Blue"}, tooltip = "Will pick this card in Combo"})
+	self.Menu.WSettings:MenuElement({id = "HarassCard", name = "Harass Card [?]", drop = {"Red", "Gold", "Blue"}, tooltip = "Will pick this card in Harass"})
+	self.Menu.WSettings:MenuElement({id = "FarmCard", name = "Farm Card [?]", drop = {"Red", "Gold", "Blue"}, tooltip = "Will pick this card in Farm"})
 	self.Menu.WSettings:MenuElement({type = SPACE, id = "CardSpace", name = "Card Keys"})
-	self.Menu.WSettings:MenuElement({id = "GoldKey", "Pick Gold Card", key = 71, onclick = self:PickGold()})
-	self.Menu.WSettings:MenuElement({id = "RedKey", "Pick Red Card", key = 84, onclick = self:PickRed()})
-	self.Menu.WSettings:MenuElement({id = "BlueKey", "Pick Blue Card", key = 69, onclick = self:PickBlue()})
+	self.Menu.WSettings:MenuElement({id = "GoldKey", name = "Pick Gold Card [?]", key = 71, tooltip = "Tap for Gold"})
+	self.Menu.WSettings:MenuElement({id = "RedKey", name = "Pick Red Card [?]", key = 84, tooltip = "Tap for Red"})
+	self.Menu.WSettings:MenuElement({id = "BlueKey", name = "Pick Blue Card [?]", key = 69, tooltip = "Tap for Blue"})
 
 	--[[Misc]]
 	self.Menu:MenuElement({type = MENU, id = "Misc", name = "Misc Settings"})
@@ -53,6 +58,7 @@ function AlqoholicTwistedFate:LoadMenu()
 
 	--[[Draw]]
 	self.Menu:MenuElement({type = MENU, id = "Draw", name = "Drawing Settings"})
+	self.Menu.Draw:MenuElement({id = "DrawReady", name = "Draw Only Ready Spells", value = true})
 	self.Menu.Draw:MenuElement({id = "DrawQ", name = "Draw Q Range", value = true})
 	self.Menu.Draw:MenuElement({id = "DrawTarget", name = "Draw Target", value = true})
 
@@ -60,41 +66,155 @@ function AlqoholicTwistedFate:LoadMenu()
 end
 
 function AlqoholicTwistedFate:Tick()
-	local target = GetTarget(Q.Range * self.Menu.Misc.MaxRange:Value())
+
+	_currentCard = myHero:GetSpellData(_W).name
+
+	--------- YES I KNOW IT'S A MESS, ONLY WAY I COULD GET IT TO WORK
+	if _pickingCard == true and _card == "Gold" then
+		if _currentCard == "GoldCardLock" then
+			Control.CastSpell(HK_W)
+			_pickingCard = false
+			_card = ""
+		end
+	end
+	if _pickingCard == true and _card == "Red" then
+		if _currentCard == "RedCardLock" then
+			Control.CastSpell(HK_W)
+			_pickingCard = false
+			_card = ""
+		end
+	end
+	if _pickingCard == true and _card == "Blue" then
+		if _currentCard == "BlueCardLock" then
+			Control.CastSpell(HK_W)
+			_pickingCard = false
+			_card = ""
+		end
+	end
+
+	if self.Menu.Combo.GoldWhenUlt:Value() and self.Menu.Combo.UltKey:Value() and Utility:IsReady(_R) and _pickingCard == false then
+		self:PickCard("Gold")
+	end
+
+	if self.Menu.WSettings.GoldKey:Value() and _pickingCard == false then
+		self:PickCard("Gold")
+	end
+
+	if self.Menu.WSettings.RedKey:Value() and _pickingCard == false then
+		self:PickCard("Red")
+	end
+
+	if self.Menu.WSettings.BlueKey:Value() and _pickingCard == false then
+		self:PickCard("Blue")
+	end
+
+	local target = self:GetTarget(Q.Range * self.Menu.Misc.MaxRange:Value())
 
 	if Utility:Mode() == "Combo" then
 		self:Combo(target)
 	elseif Utility:Mode() == "Harass" then
-		self:Harass()
+		self:Harass(target)
 	elseif Utility:Mode() == "Farm" then
 		self:Farm()
 	end
 end
 
+function AlqoholicTwistedFate:GetTarget(range)
+	local target
+	for i = 1,Game.HeroCount() do
+		local hero = Game.Hero(i)
+		if Utility:IsValidTarget(hero, range) and hero.team ~= myHero.team then
+      		target = hero
+      		break
+		end
+	end
+	return target
+end
+
+function AlqoholicTwistedFate:GetFarmTarget(range)
+	local target
+	for j = 1,Game.MinionCount() do
+		local minion = Game.Minion(j)
+		if Utility:IsValidTarget(minion, range) and minion.team ~= myHero.team then
+      		target = minion
+      		break
+		end
+	end
+	return target
+end
+
 function AlqoholicTwistedFate:Combo(target)
 	if self.Menu.Combo.ComboQ:Value() and Utility:CanCast(_Q) and Utility:IsValidTarget(target, (Q.Range * self.Menu.Misc.MaxRange:Value())) then
-		CastQ(target)
+		self:CastQ(target)
+
+	elseif self.Menu.Combo.ComboW:Value() and Utility:CanCast(_W) and _pickingCard == false and Utility:IsValidTarget(target, myHero.range) then
+
+		local card
+		if self.Menu.WSettings.ComboCard:Value() == 1 then
+			card = "Gold"
+		elseif self.Menu.WSettings.ComboCard:Value() == 2 then
+			card = "Red"
+		elseif self.Menu.WSettings.ComboCard:Value() == 3 then
+			card = "Blue"
+		end
+
+		self:PickCard(card)
 	end
 end
 
 function AlqoholicTwistedFate:Harass(target)
-	
+	if (myHero.mana/myHero.maxMana >= self.Menu.Harass.HarassMana:Value()/100) then
+		if self.Menu.Harass.HarassQ:Value() and Utility:CanCast(_Q) and Utility:IsValidTarget(target, (Q.Range * self.Menu.Misc.MaxRange:Value())) then
+			self:CastQ(target)
+
+		elseif self.Menu.Harass.HarassW:Value() and Utility:CanCast(_W) and _pickingCard == false and Utility:IsValidTarget(target, myHero.range) then
+			
+			local card
+			if self.Menu.WSettings.HarassCard:Value() == 1 then
+				card = "Red"
+			elseif self.Menu.WSettings.HarassCard:Value() == 2 then
+				card = "Gold"
+			elseif self.Menu.WSettings.HarassCard:Value() == 3 then
+				card = "Blue"
+			end
+
+			self:PickCard(card)
+
+		end
+	end
 end
 
-function AlqoholicTwistedFate:Farm(minion)
-	
+function AlqoholicTwistedFate:Farm()
+	if (myHero.mana/myHero.maxMana >= self.Menu.Harass.HarassMana:Value()/100) then
+		local minion = self:GetFarmTarget(Q.Range * self.Menu.Misc.MaxRange:Value())
+
+		if self.Menu.Farm.FarmQ:Value() and Utility:CanCast(_Q) and Utility:IsValidTarget(minion, (Q.Range * self.Menu.Misc.MaxRange:Value())) then
+			self:CastQ(minion)
+
+		elseif self.Menu.Farm.FarmW:Value() and Utility:CanCast(_W) and _pickingCard == false and Utility:IsValidTarget(target, myHero.range) then
+
+			local card
+			if self.Menu.WSettings.HarassCard:Value() == 1 then
+				card = "Red"
+			elseif self.Menu.WSettings.HarassCard:Value() == 2 then
+				card = "Gold"
+			elseif self.Menu.WSettings.HarassCard:Value() == 3 then
+				card = "Blue"
+			end
+
+			self:PickCard(card)
+			
+		end
+	end
 end
 
-function AlqoholicTwistedFate:PickGold()
-	
-end
-
-function AlqoholicTwistedFate:PickRed()
-	
-end
-
-function AlqoholicTwistedFate:PickBlue()
-	
+function AlqoholicTwistedFate:PickCard(card)
+	if Utility:IsReady(_W) and myHero:GetSpellData(_W).name == "PickACard" then
+		Control.CastSpell(HK_W)
+		PrintChat("Picking " .. card .. " Card")
+		_pickingCard = true
+		_card = card
+	end
 end
 
 function AlqoholicTwistedFate:CastQ(target)
@@ -107,6 +227,24 @@ function AlqoholicTwistedFate:CastQ(target)
 			end
 		end
 	end
+end
+
+function AlqoholicTwistedFate:Draw()
+	if myHero.dead then return end
+
+	if self.Menu.Draw.DrawReady:Value() then
+		if Utility:IsReady(_Q) and self.Menu.Draw.DrawQ:Value() then
+			Draw.Circle(myHero.pos,Q.Range * self.Menu.Misc.MaxRange:Value(),1,Draw.Color(255, 255, 255, 255))
+		end
+		elseif self.Menu.Draw.DrawQ:Value() then
+			Draw.Circle(myHero.pos,Q.Range * self.Menu.Misc.MaxRange:Value(),1,Draw.Color(255, 255, 255, 255))
+	end
+    if self.Menu.Draw.DrawTarget:Value() then
+	    local drawTarget = self:GetTarget(Q.Range)
+	    if drawTarget then
+		    Draw.Circle(drawTarget.pos,80,3,Draw.Color(255, 255, 0, 0))
+	    end
+    end
 end
 
 function OnLoad()
@@ -174,3 +312,5 @@ end
 function Utility:IsValidTarget(obj, spellRange)
 	return obj ~= nil and obj.valid and obj.visible and not obj.dead and obj.isTargetable and obj.distance <= spellRange
 end
+
+Utility()
