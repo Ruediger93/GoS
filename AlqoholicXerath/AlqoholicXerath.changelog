@@ -5,4 +5,7 @@
   ["1.1"] = {
     "Updated Ranges and Added Ult",
   },
+  ["1.2"] = {
+    "Updated Q and R math",
+  },
 }
