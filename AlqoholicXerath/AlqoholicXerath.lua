@@ -65,7 +65,7 @@ end
 
 function AlqoholicXerath:GetTarget(range)
 	local target
-	for i = 1,Game.HeroCount()  do
+	for i = 1,Game.HeroCount() do
 		local hero = Game.Hero(i)
 		if self:IsValidTarget(hero, range) and hero.team ~= myHero.team then
       		target = hero
@@ -77,7 +77,7 @@ end
 
 function AlqoholicXerath:GetFarmTarget(range)
 	local target
-	for j = 1,Game.MinionCount()	do
+	for j = 1,Game.MinionCount() do
 		local minion = Game.Minion(j)
 		if self:IsValidTarget(minion, range) and minion.team ~= myHero.team then
       		target = minion
@@ -185,13 +185,14 @@ function AlqoholicXerath:CastQ(objType)
 			end
 			if myHero.pos:DistanceTo(castPos) > 400 then
 				local time = (myHero.pos:DistanceTo(castPos) - 400) / 0.3
-			Control.KeyDown(HK_Q)
-			DelayAction(
-				function()
-					Control.SetCursorPos(castPos)
-					Control.KeyUp(HK_Q)
-				end, 
-			time)
+				Control.KeyDown(HK_Q)
+				DelayAction(
+					function()
+						Control.SetCursorPos(castPos)
+						Control.KeyUp(HK_Q)
+					end, 
+				time)
+			end
 		end
 	end
 end
