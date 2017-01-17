@@ -32,6 +32,7 @@ function AlqoholicTwistedFate:LoadMenu()
 	--[[Harass]]
 	self.Menu:MenuElement({type = MENU, id = "Harass", name = "Harass Settings"})
 	self.Menu.Harass:MenuElement({id = "HarassQ", name = "Use Q", value = true})
+	self.Menu.Harass:MenuElement({id = "HarassW", name = "Use W", value = true})
 	self.Menu.Harass:MenuElement({id = "HarassMana", name = "Min. Mana", value = 40, min = 0, max = 100})
 
 	--[[Farm]]
