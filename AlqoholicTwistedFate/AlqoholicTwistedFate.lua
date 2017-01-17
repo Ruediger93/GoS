@@ -92,7 +92,7 @@ function AlqoholicTwistedFate:Tick()
 		end
 	end
 
-	if self.Menu.Combo.GoldWhenUlt:Value() and self.Menu.Combo.UltKey:Value() and Utility:IsReady(_R) and _pickingCard == false then
+	if self.Menu.Combo.GoldWhenUlt:Value() and self.Menu.Combo.UltKey:Value() and self:IsReady(_R) and _pickingCard == false then
 		self:PickCard("Gold")
 	end
 
@@ -110,11 +110,11 @@ function AlqoholicTwistedFate:Tick()
 
 	local target = self:GetTarget(Q.Range * self.Menu.Misc.MaxRange:Value())
 
-	if Utility:Mode() == "Combo" then
+	if self:Mode() == "Combo" then
 		self:Combo(target)
-	elseif Utility:Mode() == "Harass" then
+	elseif self:Mode() == "Harass" then
 		self:Harass(target)
-	elseif Utility:Mode() == "Farm" then
+	elseif self:Mode() == "Farm" then
 		self:Farm()
 	end
 end
@@ -123,7 +123,7 @@ function AlqoholicTwistedFate:GetTarget(range)
 	local target
 	for i = 1,Game.HeroCount() do
 		local hero = Game.Hero(i)
-		if Utility:IsValidTarget(hero, range) and hero.team ~= myHero.team then
+		if self:IsValidTarget(hero, range) and hero.team ~= myHero.team then
       		target = hero
       		break
 		end
@@ -135,7 +135,7 @@ function AlqoholicTwistedFate:GetFarmTarget(range)
 	local target
 	for j = 1,Game.MinionCount() do
 		local minion = Game.Minion(j)
-		if Utility:IsValidTarget(minion, range) and minion.team ~= myHero.team then
+		if self:IsValidTarget(minion, range) and minion.team ~= myHero.team then
       		target = minion
       		break
 		end
@@ -144,10 +144,10 @@ function AlqoholicTwistedFate:GetFarmTarget(range)
 end
 
 function AlqoholicTwistedFate:Combo(target)
-	if self.Menu.Combo.ComboQ:Value() and Utility:CanCast(_Q) and Utility:IsValidTarget(target, (Q.Range * self.Menu.Misc.MaxRange:Value())) then
+	if self.Menu.Combo.ComboQ:Value() and self:CanCast(_Q) and self:IsValidTarget(target, (Q.Range * self.Menu.Misc.MaxRange:Value())) then
 		self:CastQ(target)
 
-	elseif self.Menu.Combo.ComboW:Value() and Utility:CanCast(_W) and _pickingCard == false and Utility:IsValidTarget(target, myHero.range) then
+	elseif self.Menu.Combo.ComboW:Value() and self:CanCast(_W) and _pickingCard == false and self:IsValidTarget(target, myHero.range) then
 
 		local card
 		if self.Menu.WSettings.ComboCard:Value() == 1 then
@@ -164,10 +164,10 @@ end
 
 function AlqoholicTwistedFate:Harass(target)
 	if (myHero.mana/myHero.maxMana >= self.Menu.Harass.HarassMana:Value()/100) then
-		if self.Menu.Harass.HarassQ:Value() and Utility:CanCast(_Q) and Utility:IsValidTarget(target, (Q.Range * self.Menu.Misc.MaxRange:Value())) then
+		if self.Menu.Harass.HarassQ:Value() and self:CanCast(_Q) and self:IsValidTarget(target, (Q.Range * self.Menu.Misc.MaxRange:Value())) then
 			self:CastQ(target)
 
-		elseif self.Menu.Harass.HarassW:Value() and Utility:CanCast(_W) and _pickingCard == false and Utility:IsValidTarget(target, myHero.range) then
+		elseif self.Menu.Harass.HarassW:Value() and self:CanCast(_W) and _pickingCard == false and self:IsValidTarget(target, myHero.range) then
 			
 			local card
 			if self.Menu.WSettings.HarassCard:Value() == 1 then
@@ -188,10 +188,10 @@ function AlqoholicTwistedFate:Farm()
 	if (myHero.mana/myHero.maxMana >= self.Menu.Harass.HarassMana:Value()/100) then
 		local minion = self:GetFarmTarget(Q.Range * self.Menu.Misc.MaxRange:Value())
 
-		if self.Menu.Farm.FarmQ:Value() and Utility:CanCast(_Q) and Utility:IsValidTarget(minion, (Q.Range * self.Menu.Misc.MaxRange:Value())) then
+		if self.Menu.Farm.FarmQ:Value() and self:CanCast(_Q) and self:IsValidTarget(minion, (Q.Range * self.Menu.Misc.MaxRange:Value())) then
 			self:CastQ(minion)
 
-		elseif self.Menu.Farm.FarmW:Value() and Utility:CanCast(_W) and _pickingCard == false and Utility:IsValidTarget(target, myHero.range) then
+		elseif self.Menu.Farm.FarmW:Value() and self:CanCast(_W) and _pickingCard == false and self:IsValidTarget(target, myHero.range) then
 
 			local card
 			if self.Menu.WSettings.HarassCard:Value() == 1 then
@@ -209,7 +209,7 @@ function AlqoholicTwistedFate:Farm()
 end
 
 function AlqoholicTwistedFate:PickCard(card)
-	if Utility:IsReady(_W) and myHero:GetSpellData(_W).name == "PickACard" then
+	if self:IsReady(_W) and myHero:GetSpellData(_W).name == "PickACard" then
 		Control.CastSpell(HK_W)
 		PrintChat("Picking " .. card .. " Card")
 		_pickingCard = true
@@ -233,7 +233,7 @@ function AlqoholicTwistedFate:Draw()
 	if myHero.dead then return end
 
 	if self.Menu.Draw.DrawReady:Value() then
-		if Utility:IsReady(_Q) and self.Menu.Draw.DrawQ:Value() then
+		if self:IsReady(_Q) and self.Menu.Draw.DrawQ:Value() then
 			Draw.Circle(myHero.pos,Q.Range * self.Menu.Misc.MaxRange:Value(),1,Draw.Color(255, 255, 255, 255))
 		end
 		elseif self.Menu.Draw.DrawQ:Value() then
@@ -247,16 +247,7 @@ function AlqoholicTwistedFate:Draw()
     end
 end
 
-function OnLoad()
-	AlqoholicTwistedFate()
-end
-
-class "Utility"
-
-function Utility:__init()
-end
-
-function Utility:Mode()
+function AlqoholicTwistedFate:Mode()
 	if Orbwalker["Combo"].__active then
 		return "Combo"
 	elseif Orbwalker["Harass"].__active then
@@ -269,15 +260,15 @@ function Utility:Mode()
 	return ""
 end
 
-function Utility:GetPercentHP(unit)
+function AlqoholicTwistedFate:GetPercentHP(unit)
 	return 100 * unit.health / unit.maxHealth
 end
 
-function Utility:GetPercentMP(unit)
+function AlqoholicTwistedFate:GetPercentMP(unit)
 	return 100 * unit.mana / unit.maxMana
 end
 
-function Utility:HasBuff(unit, buffname)
+function AlqoholicTwistedFate:HasBuff(unit, buffname)
 	for K, Buff in pairs(self:GetBuffs(unit)) do
 		if Buff.name:lower() == buffname:lower() then
 			return true
@@ -286,7 +277,7 @@ function Utility:HasBuff(unit, buffname)
 	return false
 end
 
-function Utility:GetBuffs(unit)
+function AlqoholicTwistedFate:GetBuffs(unit)
 	self.T = {}
 	for i = 0, unit.buffCount do
 		local Buff = unit:GetBuff(i)
@@ -297,20 +288,22 @@ function Utility:GetBuffs(unit)
 	return self.T
 end
 
-function Utility:IsReady(spellSlot)
+function AlqoholicTwistedFate:IsReady(spellSlot)
 	return myHero:GetSpellData(spellSlot).currentCd == 0 and myHero:GetSpellData(spellSlot).level > 0
 end
 
-function Utility:CheckMana(spellSlot)
+function AlqoholicTwistedFate:CheckMana(spellSlot)
 	return myHero:GetSpellData(spellSlot).mana < myHero.mana
 end
 
-function Utility:CanCast(spellSlot)
+function AlqoholicTwistedFate:CanCast(spellSlot)
 	return self:IsReady(spellSlot) and self:CheckMana(spellSlot)
 end
 
-function Utility:IsValidTarget(obj, spellRange)
+function AlqoholicTwistedFate:IsValidTarget(obj, spellRange)
 	return obj ~= nil and obj.valid and obj.visible and not obj.dead and obj.isTargetable and obj.distance <= spellRange
 end
 
-Utility()
+function OnLoad()
+	AlqoholicTwistedFate()
+end
