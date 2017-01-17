@@ -186,7 +186,7 @@ function AlqoholicTwistedFate:Harass(target)
 end
 
 function AlqoholicTwistedFate:Farm()
-	if (myHero.mana/myHero.maxMana >= self.Menu.Harass.HarassMana:Value()/100) then
+	if (myHero.mana/myHero.maxMana >= self.Menu.Farm.FarmMana:Value()/100) then
 		local minion = self:GetFarmTarget(Q.Range * self.Menu.Misc.MaxRange:Value())
 
 		if self.Menu.Farm.FarmQ:Value() and self:CanCast(_Q) and self:IsValidTarget(minion, (Q.Range * self.Menu.Misc.MaxRange:Value())) then
