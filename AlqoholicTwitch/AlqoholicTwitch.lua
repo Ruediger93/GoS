@@ -199,7 +199,7 @@ function AlqoholicTwitch:KillableWithE(range)
 	local canKill = false
 	for i = 1, Game.HeroCount() do
 		local hero = Game.Hero(i)
-		if self:IsValidTarget(hero, range) and hero.team ~= myHero.team and self:HasBuff(hero, _passiveBuffName) and (getdmg(_E, hero, myHero) > hero.health) then
+		if hero.team ~= myHero.team and self:HasBuff(hero, _passiveBuffName) and (getdmg(_E, hero, myHero) > hero.health) then
 			canKill = true
 			break
 		end
@@ -222,7 +222,7 @@ function AlqoholicTwitch:GetEnemyCount(range)
 	local count = 0
 	for i=1,Game.HeroCount() do
 		local hero = Game.Hero(i)
-		if self:IsValidTarget(hero, range) and hero.team ~= myHero.team then
+		if hero.team ~= myHero.team then
 			count = count + 1
 		end
 	end
