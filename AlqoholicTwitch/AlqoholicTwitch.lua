@@ -1,10 +1,11 @@
 class "AlqoholicTwitch"
 
+require('DamageLib')
+
 local _passiveBuffName = "TwitchDeadlyVenom"
 
 function AlqoholicTwitch:__init()
 	if myHero.charName ~= "Twitch" then return end
-	require('DamageLib')
 	self:LoadSpells()
 	self:LoadMenu()
 	Callback.Add("Tick", function()	self:Tick()	end)
@@ -199,7 +200,7 @@ function AlqoholicTwitch:KillableWithE(range)
 	local canKill = false
 	for i = 1, Game.HeroCount() do
 		local hero = Game.Hero(i)
-		if hero.team ~= myHero.team and self:HasBuff(hero, _passiveBuffName) and (getdmg(_E, hero, myHero) > hero.health) then
+		if hero.team ~= myHero.team and self:HasBuff(hero, _passiveBuffName) and getdmg(_E, hero, myHero) >= hero.health and hero.distance < E.Range then
 			canKill = true
 			break
 		end
