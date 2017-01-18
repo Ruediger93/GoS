@@ -63,7 +63,9 @@ function AlqoholicTwitch:Tick()
 
 	if self.Menu.Misc.StealthRecall:Value() and self:CanCast(_E) then
 		self:CastQ()
-		Control.CastSpell('66')
+		DelayAction(function()
+			Control.CastSpell('66')
+		end, 0.5)
 	end
 
     if self:Mode() == "Combo" then
