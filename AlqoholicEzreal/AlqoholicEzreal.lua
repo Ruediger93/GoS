@@ -169,7 +169,7 @@ end
 
 -- isReady - Returns bool
 function isReady(slot)
-	return myHero:GetSpellData(slot).currentCd < 0.099 and myHero:GetSpellData(spellSlot).mana < myHero.mana and myHero:GetSpellData(spellSlot).level > 0 -- Thanks MeoBeo
+	return (myHero:GetSpellData(slot).currentCd == 0) and (myHero:GetSpellData(spellSlot).mana < myHero.mana) and (myHero:GetSpellData(spellSlot).level >= 1) -- Thanks MeoBeo
 end
 
 -- isValidTarget - Returns bool
