@@ -185,25 +185,21 @@ function AlqoholicRyze:LastHit()
 end
 
 function AlqoholicRyze:StackTear()
-    if --[[self:CheckTear() and]] _tearStacks < 750 and (myHero.mana/myHero.maxMana >= 0.9) and self:CanCast(_Q) and not myHero.dead then
+    if self:CheckTear() and _tearStacks < 750 and (myHero.mana / myHero.maxMana >= 0.9) and self:CanCast(_Q) and not myHero.dead and not self:HasBuff(myHero, "recall") then
         Control.CastSpell(HK_Q, mousePos)
         _tearStacks = _tearStacks + 4
     end
 end
 
--- function AlqoholicRyze:CheckTear()
---     local tearID = 3070
---     local retval = 0
---     for i = ITEM_1, ITEM_6 do
---         if _inventoryTable[i] ~= nil then
---             if _inventoryTable[i].itemID == tearID then
---                 return true
---                 break
---             end
---         end
---     end
---     return false
--- end
+function AlqoholicRyze:CheckTear()
+    local tearID = 3070
+    for i = ITEM_1, ITEM_6 do
+        if _inventoryTable[i] ~= nil and _inventoryTable[i].itemID == tearID then
+            return true
+        end
+    end
+    return false
+end
 
 function AlqoholicRyze:CastQ(qtarget)
     if qtarget then
