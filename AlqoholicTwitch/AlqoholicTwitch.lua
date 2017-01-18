@@ -43,7 +43,8 @@ function AlqoholicTwitch:LoadMenu()
 
 	--[[Draw]]
 	self.Menu:MenuElement({type = MENU, id = "Draw", name = "Draw Settings"})
-	self.Menu.Draw:MenuElement({id = "DrawQ", name = "Draw Q", value = true})
+    self.Menu.Draw:MenuElement({id = "DrawReady", name = "Draw Only Ready Spells [?]", value = true, tooltip = "Only draws spells when they're ready"})
+    self.Menu.Draw:MenuElement({id = "DrawQ", name = "Draw Q", value = true})
 	self.Menu.Draw:MenuElement({id = "DrawW", name = "Draw W", value = true})
 	self.Menu.Draw:MenuElement({id = "DrawE", name = "Draw E", value = true})
 	self.Menu.Draw:MenuElement({id = "DrawR", name = "Draw R", value = true})
@@ -61,8 +62,7 @@ function AlqoholicTwitch:Tick()
 	end
 
 	if self.Menu.Misc.StealthRecall:Value() and self:CanCast(_E) then
-		self:CastE()
-		DelayAction()
+		self:CastQ()
 		Control.CastSpell('66')
 	end
 
