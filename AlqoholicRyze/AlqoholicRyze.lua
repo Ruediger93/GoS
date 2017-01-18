@@ -172,7 +172,7 @@ function AlqoholicRyze:LastHit()
             local minion = Game.Minion(i)
             if (self:IsValidTarget(minion, Q.Range * self.Menu.Misc.MaxRange:Value())) and
                 (minion.team ~= myHero.team) and
-                (getdmg(_R, minion, myHero) > minion.health) then
+                (getdmg(_Q, minion, myHero) > minion.health) then
                 target = minion
                 break
             end
@@ -225,19 +225,24 @@ function AlqoholicRyze:Draw()
     if self.Menu.Draw.DrawReady:Value() then
         if self:IsReady(_Q) and self.Menu.Draw.DrawQ:Value() then
             Draw.Circle(myHero.pos,Q.Range * self.Menu.Misc.MaxRange:Value(),1,Draw.Color(255, 255, 255, 255))
-        elseif self:IsReady(_W) and self.Menu.Draw.DrawW:Value() then
+        end
+        if self:IsReady(_W) and self.Menu.Draw.DrawW:Value() then
             Draw.Circle(myHero.pos,W.Range * self.Menu.Misc.MaxRange:Value(),1,Draw.Color(255, 255, 255, 255))
-        elseif self:IsReady(_E) and self.Menu.Draw.DrawE:Value() then
+        end
+        if self:IsReady(_E) and self.Menu.Draw.DrawE:Value() then
             Draw.Circle(myHero.pos,E.Range * self.Menu.Misc.MaxRange:Value(),1,Draw.Color(255, 255, 255, 255))
         end
-        elseif self.Menu.Draw.DrawQ:Value() then
+        if self.Menu.Draw.DrawQ:Value() then
             Draw.Circle(myHero.pos,Q.Range * self.Menu.Misc.MaxRange:Value(),1,Draw.Color(255, 255, 255, 255))
-        elseif self.Menu.Draw.DrawW:Value() then
+        end
+        if self.Menu.Draw.DrawW:Value() then
             Draw.Circle(myHero.pos,W.Range * self.Menu.Misc.MaxRange:Value(),1,Draw.Color(255, 255, 255, 255))
-        elseif self.Menu.Draw.DrawE:Value() then
+        end
+        if self.Menu.Draw.DrawE:Value() then
             Draw.Circle(myHero.pos,E.Range * self.Menu.Misc.MaxRange:Value(),1,Draw.Color(255, 255, 255, 255))
-
+        end
     end
+
     if self.Menu.Draw.DrawTarget:Value() then
         local drawTarget = self:GetTarget(Q.Range)
         if drawTarget then
