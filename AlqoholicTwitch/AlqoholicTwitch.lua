@@ -200,7 +200,7 @@ function AlqoholicTwitch:KillableWithE(range)
 	local canKill = false
 	for i = 1, Game.HeroCount() do
 		local hero = Game.Hero(i)
-		if hero.team ~= myHero.team and self:HasBuff(hero, _passiveBuffName) and getdmg(_E, hero, myHero) >= hero.health and hero.distance < E.Range then
+		if hero.team ~= myHero.team and getdmg(_E, hero, myHero) >= hero.health and hero.distance < E.Range then -- self:HasBuff(hero, _passiveBuffName) and 
 			canKill = true
 			break
 		end
