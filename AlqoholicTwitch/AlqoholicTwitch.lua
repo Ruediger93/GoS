@@ -55,9 +55,7 @@ function AlqoholicTwitch:Tick()
 	if myHero.dead then return end
 
 	if self.Menu.Misc.AutoE:Value() and self:CanCast(_E) then
-		local eTarget = self:GetTarget(E.Range)
-		local overKill = self.Menu.Misc.EOverKill:Value()
-		if eTarget and self:IsValidTarget(eTarget, E.Range) and self:HasBuff(eTarget, _passiveBuffName) and (getdmg(_E, eTarget, myHero) > eTarget.health) then
+		if self:KillableWithE(E.Range) then
 			self:CastE()
 		end
 	end
