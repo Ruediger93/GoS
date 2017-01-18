@@ -205,10 +205,12 @@ end
 --     return false
 -- end
 
-function AlqoholicRyze:CastQ(unit)
-    if unit:GetCollision(Q.Radius * 2, Q.Speed, Q.Delay) == 0 then
-        local castPos = unit:GetPrediction(Q.Speed, Q.Delay)
-        Control.CastSpell(HK_Q, castPos)
+function AlqoholicRyze:CastQ(qtarget)
+    if qtarget then
+        if qtarget:GetCollision(Q.Radius * 2, Q.Speed, Q.Delay) == 0 then
+            local castPos = qtarget:GetPrediction(Q.Speed, Q.Delay)
+            Control.CastSpell(HK_Q, castPos)
+        end
     end
 end
 
