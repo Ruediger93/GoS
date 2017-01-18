@@ -15,7 +15,7 @@ end
 function AlqoholicTwitch:LoadSpells()
 	W = {Range = 950, Delay = 0.25, Radius = 50, Speed = 1410}
 	E = {Range = 1200, Delay = 0, Radius = 0, Speed = 1337000}
-	R = {Range = myHero.range + myHero:GetSpellData(_R).range, Delay = 0, Radius = 0, Speed = 0}
+	R = {Range = 700, Delay = 0, Radius = 0, Speed = 0}
 end
 
 function AlqoholicTwitch:LoadMenu()
@@ -37,7 +37,7 @@ function AlqoholicTwitch:LoadMenu()
 
 	--[[Misc]]
 	self.Menu:MenuElement({type = MENU, id = "Misc", name = "Misc Settings"})
-	self.Menu.Misc:MenuElement({id = "StealthRecall", name = "Stealth Recall", key = 84})
+	self.Menu.Misc:MenuElement({id = "StealthRecall", name = "Stealth Recall [?]", key = 84, tooltip = "Must have Recall on 'B'"})
 	self.Menu.Misc:MenuElement({id = "AutoE", name = "Auto E on Killable", value = true})
 	self.Menu.Misc:MenuElement({id = "EOverKill", name = "E Over Kill Damage % [?]", value = 5, min = 1, max = 100, step = 1, tooltip = "Will add x% more damage onto the calculation"})
 	self.Menu.Misc:MenuElement({id = "AutoQ", name = "Auto Q on Reset - NO API FOR IT YET", value = true})
@@ -52,19 +52,20 @@ function AlqoholicTwitch:LoadMenu()
 end
 
 function AlqoholicTwitch:Tick()
-	
+	if myHero.dead then return end
+
 	if self.Menu.Misc.AutoE:Value() and self:CanCast(_E) then
 		local eTarget = self:GetTarget(E.Range)
 		local overKill = self.Menu.Misc.EOverKill:Value()
-		if eTarget and self:IsValidTarget(eTarget, E.Range) and self:HasBuff(eTarget, _passiveBuffName) and ((getdmg(_E, eTarget, myHero) + ((getdmg(_E, eTarget, myHero) / 100) * overKill)) > eTarget.health) then
+		if eTarget and self:IsValidTarget(eTarget, E.Range) and self:HasBuff(eTarget, _passiveBuffName) and (getdmg(_E, eTarget, myHero) > eTarget.health) then
 			self:CastE()
 		end
 	end
 
-	if self.Menu.Misc.StealthRecall:Value() and self:CanCast(_E) then
+	if self.Menu.Misc.StealthRecall:Value() and self:CanCast(_Q) then
 		self:CastQ()
 		DelayAction(function()
-			Control.CastSpell('66')
+			Control.CastSpell('B')
 		end, 0.5)
 	end
 
@@ -200,7 +201,7 @@ function AlqoholicTwitch:KillableWithE(range)
 	local canKill = false
 	for i = 1, Game.Game.HeroCount() do
 		local hero = Game.Hero(i)
-		if self:IsValidTarget(hero, range) and hero.team ~= myHero.team and self:HasBuff(hero, _passiveBuffName) and ((getdmg(_E, hero, myHero) + ((getdmg(_E, hero, myHero) / 100) * overKill)) > hero.health) then
+		if self:IsValidTarget(hero, range) and hero.team ~= myHero.team and self:HasBuff(hero, _passiveBuffName) and (getdmg(_E, eTarget, myHero) > eTarget.health) then
 			canKill = true
 			break
 		end
@@ -259,19 +260,20 @@ function AlqoholicTwitch:Draw()
         if self:IsReady(_R) and self.Menu.Draw.DrawR:Value() then
             Draw.Circle(myHero.pos,R.Range,1,Draw.Color(255, 255, 255, 255))
         end
-        if self.Menu.Draw.DrawW:Value() then
-            Draw.Circle(myHero.pos,W.Range,1,Draw.Color(255, 255, 255, 255))
-        end
-        if self.Menu.Draw.DrawE:Value() then
-            Draw.Circle(myHero.pos,E.Range,1,Draw.Color(255, 255, 255, 255))
-        end
-        if self.Menu.Draw.DrawR:Value() then
-            Draw.Circle(myHero.pos,R.Range,1,Draw.Color(255, 255, 255, 255))
-        end
+    end
+
+    if self.Menu.Draw.DrawW:Value() then
+        Draw.Circle(myHero.pos,W.Range,1,Draw.Color(255, 255, 255, 255))
+    end
+    if self.Menu.Draw.DrawE:Value() then
+        Draw.Circle(myHero.pos,E.Range,1,Draw.Color(255, 255, 255, 255))
+    end
+    if self.Menu.Draw.DrawR:Value() then
+        Draw.Circle(myHero.pos,R.Range,1,Draw.Color(255, 255, 255, 255))
     end
 
     if self.Menu.Draw.DrawTarget:Value() then
-        local drawTarget = self:GetTarget(Q.Range)
+        local drawTarget = self:GetTarget(R.Range)
         if drawTarget then
             Draw.Circle(drawTarget.pos,80,3,Draw.Color(255, 255, 0, 0))
         end
