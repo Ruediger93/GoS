@@ -55,7 +55,8 @@ function AlqoholicRyze:LoadMenu()
     --[[Misc]]
     self.Menu:MenuElement({type = MENU, id = "Misc", name = "Misc Settings"})
     self.Menu.Misc:MenuElement({id = "MaxRange", name = "Max Range Limiter [?]", value = 0.9, min = 0.5, max = 1, step = 0.01, tooltip = "eg. X = 0.80 (Q.Range = (865 * 0.80) = 692)"})
-    self.Menu.Misc:MenuElement({id = "StackTear", name = "StackTear when >= 90% mana", value = true})
+    self.Menu.Misc:MenuElement({id = "StackTear", name = "StackTear when >= x% mana", value = true})
+    self.Menu.Misc:MenuElement({id = "StackTearMana", name = "Min. Mana", value = 90, min = 0, max = 100, step = 1})
     self.Menu.Misc:MenuElement({type = SPACE, id = "TODO", name = "Need things to add - Give feedback."})
 
     --[[Draw]]
@@ -71,7 +72,7 @@ end
 
 function AlqoholicRyze:Tick()
 
-    if (_updateTime + 5000 < GetTickCount()) and self.Menu.Misc.StackTear:Value() then
+    if (_updateTime + 5000 < GetTickCount()) and self.Menu.Misc.StackTear:Value() and (myHero.mana/myHero.maxMana >= self.Menu.Misc.StackTearMana:Value() / 100) then
         for j = ITEM_1, ITEM_6 do
             _inventoryTable[j] = myHero:GetItemData(j);
         end
@@ -185,7 +186,7 @@ function AlqoholicRyze:LastHit()
 end
 
 function AlqoholicRyze:StackTear()
-    if self:CheckTear() and _tearStacks < 750 and (myHero.mana / myHero.maxMana >= 0.9) and self:CanCast(_Q) and not myHero.dead and not self:HasBuff(myHero, "recall") then
+    if self:CheckTear() and _tearStacks < 750 and (myHero.mana/myHero.maxMana >= self.Menu.Misc.StackTearMana:Value() / 100) and self:CanCast(_Q) and not myHero.dead and not self:HasBuff(myHero, "recall") then
         Control.CastSpell(HK_Q, mousePos)
         _tearStacks = _tearStacks + 4
     end
