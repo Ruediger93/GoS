@@ -20,7 +20,7 @@ function AlqoholicTwistedFate:LoadSpells()
 end
 
 function AlqoholicTwistedFate:LoadMenu()
-	self.Menu = MenuElement({type = MENU, id = "AlqoholicTwistedFate", name = "Alqohol - AlqoholicTwistedFate", lefticon="https://cdn.discordapp.com/emojis/249237025754972171.png"})
+	self.Menu = MenuElement({type = MENU, id = "AlqoholicTwistedFate", name = "Alqohol - AlqoholicTwistedFate", leftIcon="https://puu.sh/tq0A8/5b42557aa9.png"})
 
 	--[[Combo]]
 	self.Menu:MenuElement({type = MENU, id = "Combo", name = "Combo Settings"})
@@ -54,7 +54,7 @@ function AlqoholicTwistedFate:LoadMenu()
 	--[[Misc]]
 	self.Menu:MenuElement({type = MENU, id = "Misc", name = "Misc Settings"})
 	self.Menu.Misc:MenuElement({id = "MaxRange", name = "Max Range Limiter", value = 0.9, min = 0.5, max = 1, step = 0.01})
-	self.Menu.Misc:MenuElement({type = SPACE, id = "ToolTip", name = "eg. X = 0.80 (Q.Range = (1150 * 0.80) = 920)"})
+	self.Menu.Misc:MenuElement({type = SPACE, id = "ToolTip", name = "eg. X = 0.80 (Q.Range = (1450 * 0.80) = 1160)"})
 	self.Menu.Misc:MenuElement({type = SPACE, id = "TODO", name = "Need things to add - Give feedback."})
 
 	--[[Draw]]
