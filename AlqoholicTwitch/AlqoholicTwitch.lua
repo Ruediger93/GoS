@@ -248,9 +248,6 @@ function AlqoholicTwitch:Draw()
     if myHero.dead then return end
 
     if self.Menu.Draw.DrawReady:Value() then
-        if self:IsReady(_Q) and self.Menu.Draw.DrawQ:Value() then
-            Draw.Circle(myHero.pos,Q.Range,1,Draw.Color(255, 255, 255, 255))
-        end
         if self:IsReady(_W) and self.Menu.Draw.DrawW:Value() then
             Draw.Circle(myHero.pos,W.Range,1,Draw.Color(255, 255, 255, 255))
         end
@@ -259,9 +256,6 @@ function AlqoholicTwitch:Draw()
         end
         if self:IsReady(_R) and self.Menu.Draw.DrawR:Value() then
             Draw.Circle(myHero.pos,R.Range,1,Draw.Color(255, 255, 255, 255))
-        end
-        if self.Menu.Draw.DrawQ:Value() then
-            Draw.Circle(myHero.pos,Q.Range,1,Draw.Color(255, 255, 255, 255))
         end
         if self.Menu.Draw.DrawW:Value() then
             Draw.Circle(myHero.pos,W.Range,1,Draw.Color(255, 255, 255, 255))
