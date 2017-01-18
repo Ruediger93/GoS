@@ -15,6 +15,7 @@ end
 function AlqoholicTwitch:LoadSpells()
 	W = {Range = 950, Delay = 0.25, Radius = 50, Speed = 1410}
 	E = {Range = 1200, Delay = 0, Radius = 0, Speed = 1337000}
+	R = {Range = myHero.range + myHero:GetSpellData(_R).range, Delay = 0, Radius = 0, Speed = 0}
 end
 
 function AlqoholicTwitch:LoadMenu()
@@ -44,7 +45,6 @@ function AlqoholicTwitch:LoadMenu()
 	--[[Draw]]
 	self.Menu:MenuElement({type = MENU, id = "Draw", name = "Draw Settings"})
     self.Menu.Draw:MenuElement({id = "DrawReady", name = "Draw Only Ready Spells [?]", value = true, tooltip = "Only draws spells when they're ready"})
-    self.Menu.Draw:MenuElement({id = "DrawQ", name = "Draw Q", value = true})
 	self.Menu.Draw:MenuElement({id = "DrawW", name = "Draw W", value = true})
 	self.Menu.Draw:MenuElement({id = "DrawE", name = "Draw E", value = true})
 	self.Menu.Draw:MenuElement({id = "DrawR", name = "Draw R", value = true})
