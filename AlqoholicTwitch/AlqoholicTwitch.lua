@@ -197,7 +197,7 @@ end
 
 function AlqoholicTwitch:KillableWithE(range)
 	local canKill = false
-	for i = 1, Game.Game.HeroCount() do
+	for i = 1, Game.HeroCount() do
 		local hero = Game.Hero(i)
 		if self:IsValidTarget(hero, range) and hero.team ~= myHero.team and self:HasBuff(hero, _passiveBuffName) and (getdmg(_E, eTarget, myHero) > eTarget.health) then
 			canKill = true
