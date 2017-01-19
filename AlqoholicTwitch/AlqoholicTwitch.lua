@@ -196,16 +196,29 @@ function AlqoholicTwitch:HasBuff(unit, buffname)
     return false
 end
 
-function AlqoholicTwitch:GetEDamage(source, target, eStacks)
+function AlqoholicTwitch:GetEDamage(target)
+	local stacks = self:BuffStacks(target, "TwitchDeadlyVenom")
 
+	local spellLevel = myHero:GetSpellData(_E).level
+
+	local eDamage = {20, 35, 50, 65, 80}
+	local stackDamage = {15, 20, 25, 30, 35}
+	local adDamage = myHero.totalDamage * 0.25
+	local apDamage = myHero.ap * 0.20
+
+	if stacks == 0 then
+		return eDamage[spellLevel]
+	else
+		return eDamage[spellLevel] + ((stackDamage[spellLevel] + adDamage + apDamage) * stacks)
+	end
 end
 
 function AlqoholicTwitch:BuffStacks(unit, buffname)
   	for i = 0, unit.buffCount do
     	local buff = unit:GetBuff(i)
-    	if buff.name == buffname and buff.stacks > 0 then
-    		PrintChat(buff.stacks)
-			return buff.stacks
+    	if buff.name == buffname and buff.count > 0 then
+    		PrintChat(buff.count)
+			return buff.count
     	end
   	end
   	return 0
