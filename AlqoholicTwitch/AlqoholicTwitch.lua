@@ -146,7 +146,7 @@ function AlqoholicTwitch:KS()
   		local hero = Game.Hero(i);
 	    if hero and hero.valid and hero.isEnemy and hero.visible then
 	    	if hero.distance <= E.Range then
-	          	local spellDmg = getdmg("E", hero, myHero, 1);
+	          	local spellDmg = getdmg("E", hero, myHero, 2);
 	          	if spellDmg > hero.health then
 	                self:CastE()
 	            end
