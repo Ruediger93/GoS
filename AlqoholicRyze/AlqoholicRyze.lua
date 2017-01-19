@@ -20,7 +20,7 @@ function AlqoholicRyze:__init()
 end
 
 function AlqoholicRyze:LoadSpells()
-    Q = {Range = 865, Delay = 0.25, Radius = 50, Speed = 1700}
+    Q = {Range = 865, Delay = 0.26, Radius = 50, Speed = 1700}
     W = {Range = 585, Delay = 0, Radius = 0, Speed = 1700}
     E = {Range = 585, Delay = 0, Radius = 0, Speed = 1700}
 end
@@ -173,7 +173,7 @@ function AlqoholicRyze:LastHit()
             local minion = Game.Minion(i)
             if (self:IsValidTarget(minion, Q.Range * self.Menu.Misc.MaxRange:Value())) and
                 (minion.team ~= myHero.team) and
-                (getdmg(_Q, minion, myHero) > minion.health) then
+                (getdmg(_Q, minion, myHero, 1) > minion.health) then
                 target = minion
                 break
             end
@@ -204,19 +204,24 @@ end
 
 function AlqoholicRyze:CastQ(qtarget)
     if qtarget then
-        if qtarget:GetCollision(Q.Radius * 2, Q.Speed, Q.Delay) == 0 then
+        if qtarget:GetCollision(Q.Radius, Q.Speed, Q.Delay) == 0 then
             local castPos = qtarget:GetPrediction(Q.Speed, Q.Delay)
+            Control.SetCursorPos(castPos)
             Control.CastSpell(HK_Q, castPos)
         end
     end
 end
 
 function AlqoholicRyze:CastW(unit)
-    Control.CastSpell(HK_W, unit)
+    if self:CanCast(_W) then
+        Control.CastSpell(HK_W, unit)
+    end
 end
 
 function AlqoholicRyze:CastE(unit)
-    Control.CastSpell(HK_E, unit)
+    if self:CanCast(_E) then
+        Control.CastSpell(HK_E, unit)
+    end
 end
 
 
