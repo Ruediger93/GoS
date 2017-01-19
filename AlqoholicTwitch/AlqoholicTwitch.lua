@@ -2,8 +2,6 @@ class "AlqoholicTwitch"
 
 require('DamageLib')
 
-local _passiveBuffName = "TwitchDeadlyVenom"
-
 function AlqoholicTwitch:__init()
 	if myHero.charName ~= "Twitch" then return end
 	self:LoadSpells()
@@ -188,9 +186,12 @@ function AlqoholicTwitch:HasBuff(unit, buffname)
 end
 
 function AlqoholicTwitch:GetStacks(unit)
+	local passiveStacks = 0
+	local passiveBuffName = "twitchdeadlyvenom"
 	for K, Buff in pairs(self:GetBuffs(unit)) do
-		if Buff.name:lower() == _passiveBuffName:lower() then
-			return Buff.stacks
+		if Buff.name:lower() == passiveBuffName:lower() then
+			passiveStacks = Buff.stacks
+			return passiveStacks
 		end
 	end
 	return 0
@@ -200,7 +201,7 @@ function AlqoholicTwitch:KillableWithE(range)
 	local canKill = false
 	for i = 1, Game.HeroCount() do
 		local hero = Game.Hero(i)
-		if hero.team ~= myHero.team and self:GetStacks(hero) > 0 and getdmg(_E, hero, myHero) >= hero.health and hero.distance < range then
+		if hero.team ~= myHero.team and self:HasBuff(hero, "twitchdeadlyvenom") and getdmg(_E, hero, myHero, 1) >= hero.health and hero.distance < range then
 			canKill = true
 			break
 		end
