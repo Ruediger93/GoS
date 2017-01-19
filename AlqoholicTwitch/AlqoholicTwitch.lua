@@ -83,7 +83,7 @@ function AlqoholicTwitch:Combo()
 	local target = self:GetTarget(W.Range)
 
 	if target and self:IsValidTarget(target, W.Range) then
-		if useW and self:CanCast(_W) and self:GetStacks(target) < 6 then
+		if useW and self:CanCast(_W) and self:BuffStacks(target) < 6 then
 			local castPos = target:GetPrediction(W.Speed, W.Delay)
 			self:CastW(castPos)
 		elseif useR and self:GetEnemyCount() >= rEnemies then
@@ -103,7 +103,7 @@ function AlqoholicTwitch:Harass()
 	local target = self:GetTarget(W.Range)
 
 	if target and self:IsValidTarget(target, W.Range) and (myHero.mana/myHero.maxMana >= self.Menu.Harass.HarassMana:Value() / 100) then
-		if useW and self:CanCast(_W) and self:GetStacks(target) < 6 then
+		if useW and self:CanCast(_W) and self:GetStacks(target, "twitchdeadlyvenom") < 6 then
 			local castPos = target:GetPrediction(W.Speed, W.Delay)
 			self:CastW(castPos)
 		elseif useE and self:GetStacks(target) >= harassStacks then
@@ -196,16 +196,19 @@ function AlqoholicTwitch:HasBuff(unit, buffname)
     return false
 end
 
-function AlqoholicTwitch:GetStacks(unit)
-	local passiveStacks = 0
-	local passiveBuffName = "twitchdeadlyvenom"
-	for K, Buff in pairs(self:GetBuffs(unit)) do
-		if Buff.name:lower() == passiveBuffName:lower() then
-			passiveStacks = Buff.stacks
-			return passiveStacks
-		end
-	end
-	return 0
+function AlqoholicTwitch:GetEDamage(source, target, eStacks)
+
+end
+
+function AlqoholicTwitch:BuffStacks(unit, buffname)
+  	for i = 0, unit.buffCount do
+    	local buff = unit:GetBuff(i)
+    	if buff.name == buffname and buff.stacks > 0 then
+    		PrintChat(buff.stacks)
+			return buff.stacks
+    	end
+  	end
+  	return 0
 end
 
 function AlqoholicTwitch:KillableWithE(range)
