@@ -146,7 +146,7 @@ function AlqoholicTwitch:KS()
   		local hero = Game.Hero(i);
 	    if hero and hero.valid and hero.isEnemy and hero.visible then
 	    	if hero.distance <= E.Range then
-	          	local spellDmg = getdmg("E", hero, myHero, 2);
+	          	local spellDmg = self:GetEDamage(hero)
 	          	if spellDmg > hero.health then
 	                self:CastE()
 	            end
@@ -228,7 +228,7 @@ function AlqoholicTwitch:KillableWithE(range)
 	local canKill = false
 	for i = 1, Game.HeroCount() do
 		local hero = Game.Hero(i)
-		if hero.team ~= myHero.team and getdmg("E", hero, myHero, 1) >= hero.health and hero.distance < range then
+		if hero.team ~= myHero.team and self:GetEDamage(hero) >= hero.health and hero.distance < range then
 			canKill = true
 			break
 		end
