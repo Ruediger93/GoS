@@ -89,7 +89,7 @@ function AlqoholicTwitch:Combo()
 		elseif useR and self:GetEnemyCount() >= rEnemies then
 			self:CastR()
 		elseif useE then
-			self:KS
+			self:KS()
 		end
 	end
 end
