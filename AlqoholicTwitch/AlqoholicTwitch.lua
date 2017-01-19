@@ -1,6 +1,6 @@
 class "AlqoholicTwitch"
 
-require('DamageLib')
+require("DamageLib")
 
 function AlqoholicTwitch:__init()
 	if myHero.charName ~= "Twitch" then return end
@@ -54,9 +54,7 @@ function AlqoholicTwitch:Tick()
 	if myHero.dead then return end
 
 	if self.Menu.Misc.AutoE:Value() and self:CanCast(_E) then
-		if self:KillableWithE(E.Range) then
-			self:CastE()
-		end
+		self:KS()
 	end
 
 	if self.Menu.Misc.StealthRecall:Value() and self:CanCast(_Q) then
@@ -85,7 +83,6 @@ function AlqoholicTwitch:Combo()
 	local target = self:GetTarget(W.Range)
 
 	if target and self:IsValidTarget(target, W.Range) then
-		-- if useQ
 		if useW and self:CanCast(_W) and self:GetStacks(target) < 6 then
 			local castPos = target:GetPrediction(W.Speed, W.Delay)
 			self:CastW(castPos)
@@ -142,6 +139,20 @@ function AlqoholicTwitch:Mode()
         return "LastHit"
     end
     return ""
+end
+
+function AlqoholicTwitch:KS()
+	for i = 1, Game.HeroCount() do
+  		local hero = Game.Hero(i);
+	    if hero and hero.valid and hero.isEnemy and hero.visible then
+	    	if hero.distance <= E.Range then
+	          	local spellDmg = getdmg("E", hero, myHero, 1);
+	          	if spellDmg > hero.health then
+	                self:CastE()
+	            end
+	        end
+	    end
+	end
 end
 
 function AlqoholicTwitch:GetTarget(range)
@@ -201,7 +212,7 @@ function AlqoholicTwitch:KillableWithE(range)
 	local canKill = false
 	for i = 1, Game.HeroCount() do
 		local hero = Game.Hero(i)
-		if hero.team ~= myHero.team and self:HasBuff(hero, "twitchdeadlyvenom") and getdmg(_E, hero, myHero, 1) >= hero.health and hero.distance < range then
+		if hero.team ~= myHero.team and getdmg("E", hero, myHero, 1) >= hero.health and hero.distance < range then
 			canKill = true
 			break
 		end
