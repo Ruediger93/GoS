@@ -207,18 +207,17 @@ function AlqoholicTwitch:GetEDamage(target)
 	local apDamage = myHero.ap * 0.20
 
 	if stacks == 0 then
-		return eDamage[spellLevel]
+		return 0
 	else
-		return eDamage[spellLevel] + ((stackDamage[spellLevel] + adDamage + apDamage) * stacks)
+		return eDamage[spellLevel] + ((stackDamage[spellLevel] + adDamage + apDamage) * (stacks * 3))
 	end
 end
 
 function AlqoholicTwitch:BuffStacks(unit, buffname)
   	for i = 0, unit.buffCount do
     	local buff = unit:GetBuff(i)
-    	if buff.name == buffname and buff.count > 0 then
-    		PrintChat(buff.count)
-			return buff.count
+    	if buff.name == buffname and buff.stacks > 0 then
+			return buff.stacks
     	end
   	end
   	return 0
