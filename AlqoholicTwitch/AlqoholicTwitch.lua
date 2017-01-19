@@ -88,8 +88,8 @@ function AlqoholicTwitch:Combo()
 			self:CastW(castPos)
 		elseif useR and self:GetEnemyCount() >= rEnemies then
 			self:CastR()
-		elseif useE and self:KillableWithE(E.Range) then
-			self:CastE()
+		elseif useE then
+			self:KS()
 		end
 	end
 end
@@ -146,7 +146,7 @@ function AlqoholicTwitch:KS()
   		local hero = Game.Hero(i);
 	    if hero and hero.valid and hero.isEnemy and hero.visible then
 	    	if hero.distance <= E.Range then
-	          	local spellDmg = getdmg("E", hero, myHero, 1);
+	          	local spellDmg = getdmg("E", hero, myHero);
 	          	if spellDmg > hero.health then
 	                self:CastE()
 	            end
