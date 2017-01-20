@@ -386,17 +386,35 @@ end
 function AlqoholicLeeSin:Draw()
     if myHero.dead then return end
 
-    if self.Menu.Draw.DrawW:Value() then
-        Draw.Circle(myHero.pos,W.Range,1,Draw.Color(255, 255, 255, 255))
-    end
-    if self.Menu.Draw.DrawE:Value() then
-        Draw.Circle(myHero.pos,E.Range,1,Draw.Color(255, 255, 255, 255))
-    end
-    if self.Menu.Draw.DrawR:Value() then
-        Draw.Circle(myHero.pos,R.Range,1,Draw.Color(255, 255, 255, 255))
+	if self.Menu.Draw.DrawReady:Value() then
+        if self:IsReady(_Q) and self.Menu.Draw.DrawQ:Value() then
+            Draw.Circle(myHero.pos, Q.Range, 1, Draw.Color(255, 255, 255, 255))
+        end
+        if self:IsReady(_W) and self.Menu.Draw.DrawW:Value() then
+            Draw.Circle(myHero.pos, W.Range, 1, Draw.Color(255, 255, 255, 255))
+    		Draw.Circle(myHero.pos, 600, 1, Draw.Color(255,255,0,0))
+        end
+        if self:IsReady(_E) and self.Menu.Draw.DrawE:Value() then
+            Draw.Circle(myHero.pos, E.Range, 1, Draw.Color(255, 255, 255, 255))
+        end
+        if self:IsReady(_R) and self.Menu.Draw.DrawR:Value() then
+            Draw.Circle(myHero.pos, R.Range, 1, Draw.Color(255, 255, 255, 255))
+        end
+    else
+        if self.Menu.Draw.DrawQ:Value() then
+            Draw.Circle(myHero.pos, Q.Range, 1, Draw.Color(255, 255, 255, 255))
+        end
+        if self.Menu.Draw.DrawW:Value() then
+            Draw.Circle(myHero.pos, W.Range, 1, Draw.Color(255, 255, 255, 255))
+        end
+        if self.Menu.Draw.DrawE:Value() then
+            Draw.Circle(myHero.pos, E.Range, 1, Draw.Color(255, 255, 255, 255))
+        end
+        if self.Menu.Draw.DrawR:Value() then
+            Draw.Circle(myHero.pos, R.Range, 1, Draw.Color(255, 255, 255, 255))
+        end
     end
 
-    Draw.Circle(myHero.pos, 600, 1, Draw.Color(255,255,0,0))
 
     if self.Menu.Draw.DrawTarget:Value() then
         local drawTarget = self:GetTarget(R.Range)
