@@ -36,6 +36,10 @@ function AlqoholicLeeSin:LoadMenu()
 	self.Menu.Combo:MenuElement({id = "ComboWardJump", name = "Ward Jump [?]", value = true, tooltip = "Ward Jump to Target if out of E Range"})
 	self.Menu.Combo:MenuElement({id = "ComboE", name = "Use E", value = true})
 	self.Menu.Combo:MenuElement({id = "ComboR", name = "Use R to KS", value = true})
+	self.Menu.Combo:MenuElement({id = "StarCombo", name = "Star Combo [?]", key = 84, tooltip = "Q > Ward Jump > E R > Q"})
+	self.Menu.Combo:MenuElement({id = "KickFlash", name = "Kick Flash [?]", value = true, tooltip = "Kick > Flash Behind | Press Key on Target"})
+	self.Menu.Combo:MenuElement({id = "KickFlashKey", name = "Kick Flash Key", key = 82})
+
 	--[[Farm]]
 	self.Menu:MenuElement({type = MENU, id = "Farm", name = "Farm Settings"})
 	self.Menu.Farm:MenuElement({id = "FarmQ", name = "Use Q", value = true})
