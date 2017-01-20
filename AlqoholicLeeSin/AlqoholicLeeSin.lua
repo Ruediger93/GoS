@@ -70,6 +70,11 @@ function AlqoholicLeeSin:Tick()
         self:GetWardItems()
         _updateTime = GetTickCount()
     end
+
+	if self.Menu.Combo.KickFlash:Value() and self.Menu.Combo.KickFlashKey:Value() then
+		self:KickFlash()
+	end
+
 	if self.Menu.Misc.WardJump:Value() then
 		self:WardJump(mousePos)
 	end
