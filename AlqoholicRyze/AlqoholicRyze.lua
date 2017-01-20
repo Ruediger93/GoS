@@ -5,7 +5,7 @@ local _halfPassive = "ryzeqiconhalfcharge"
 local _fullPassive = "ryzeqiconfullcharge"
 local _eBuff = "RyzeE"
 local _comboMode
-local _inventoryTable = {};
+local _inventoryTable = {}
 local _tearStacks = 0
 local _updateTime = 0
 
