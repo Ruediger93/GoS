@@ -144,7 +144,7 @@ function AlqoholicTwitch:Harass()
 	local target = self:GetTarget(W.Range)
 
 	if target and self:IsValidTarget(target, W.Range) and (myHero.mana/myHero.maxMana >= self.Menu.Harass.HarassMana:Value() / 100) then
-		if useW and self:CanCast(_W) and self:GetStacks(target, "twitchdeadlyvenom") < 6 then
+		if useW and self:CanCast(_W) and twitchE[target.networkID].stacks < 6 then
 			local castPos = target:GetPrediction(W.Speed, W.Delay)
 			self:CastW(castPos)
 		elseif useE and self:GetStacks(target) >= harassStacks then

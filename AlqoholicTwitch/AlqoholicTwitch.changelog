@@ -1,0 +1,11 @@
+{
+  ["1.0"] = {
+    "Initial Release",
+  },
+  ["1.1"] = {
+    "Fixed E Usage",
+  },
+  ["1.2"] = {
+  	"Fixed E Damage Calculations",
+  },
+}
