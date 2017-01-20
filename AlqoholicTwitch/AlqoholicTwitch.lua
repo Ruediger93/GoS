@@ -96,12 +96,12 @@ function AlqoholicTwitch:Tick()
 				else
 					twitchE[hero.networkID].stacks = 6
 					twitchE[hero.networkID].tick = GetTickCount()
-					PrintChat(hero.charName .. " Has " .. twitchE[hero.networkID].stacks .. " Stacks")
+					--PrintChat(hero.charName .. " Has " .. twitchE[hero.networkID].stacks .. " Stacks")
 				end
-			elseif buff.duration == 0 then
-				twitchE[hero.networkID].stacks = 0
-				twitchE[hero.networkID].tick = 0
 			end
+		elseif hero and hero.isEnemy and not buff then
+			twitchE[hero.networkID].stacks = 0
+			twitchE[hero.networkID].tick = 0
 		end
 	end
 
@@ -124,7 +124,7 @@ function AlqoholicTwitch:Combo()
 	local target = self:GetTarget(W.Range)
 
 	if target and self:IsValidTarget(target, W.Range) then
-		if useW and self:CanCast(_W) and self:BuffStacks(target) < 6 then
+		if useW and self:CanCast(_W) and twitchE[target.networkID].stacks < 6 then
 			local castPos = target:GetPrediction(W.Speed, W.Delay)
 			self:CastW(castPos)
 		elseif useR and self:GetEnemyCount() >= rEnemies then
@@ -258,7 +258,7 @@ function AlqoholicTwitch:GetEDamage(target)
 	local apDamage = myHero.ap * 0.20
 
 	--local finalDamage = eDamage[spellLevel] + ((stackDamage[spellLevel] + adDamage + apDamage) * (stacks * 3))
-	local finalDamage = (getdmg("E", target, myHero, 1) * twitchE[target.networkID].stacks) * 0.9
+	local finalDamage = (getdmg("E", target, myHero, 1) * twitchE[target.networkID].stacks) * 0.8
 
 	if stacks == 0 then
 		return 0
