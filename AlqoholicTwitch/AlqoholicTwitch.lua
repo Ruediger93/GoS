@@ -2,6 +2,8 @@ class "AlqoholicTwitch"
 
 require("DamageLib")
 
+local twitchE = {}
+
 function AlqoholicTwitch:__init()
 	if myHero.charName ~= "Twitch" then return end
 	self:LoadSpells()
@@ -9,6 +11,7 @@ function AlqoholicTwitch:__init()
 	Callback.Add("Tick", function()	self:Tick()	end)
 	Callback.Add("Draw", function()	self:Draw()	end)
 	PrintChat("[AlqoholicTwitch] Initiated")
+	self:AddToTable()
 end
 
 function AlqoholicTwitch:LoadSpells()
@@ -47,7 +50,20 @@ function AlqoholicTwitch:LoadMenu()
 	self.Menu.Draw:MenuElement({id = "DrawW", name = "Draw W", value = true})
 	self.Menu.Draw:MenuElement({id = "DrawE", name = "Draw E", value = true})
 	self.Menu.Draw:MenuElement({id = "DrawR", name = "Draw R", value = true})
+	self.Menu.Draw:MenuElement({id = "DrawEDamage", name = "Draw E Damage", value = true})
 	self.Menu.Draw:MenuElement({id = "DrawTarget", name = "Draw Target", value = true})
+end
+
+function AlqoholicTwitch:AddToTable()
+	for i=1,Game.HeroCount() do
+		local hero = Game.Hero(i)
+		if hero and hero.isEnemy then
+			twitchE[hero.networkID] = {}
+			twitchE[hero.networkID].stacks = 0
+			twitchE[hero.networkID].tick = 0
+			--PrintChat("Initiated " .. hero.charName .. " with " .. twitchE[hero.networkID].stacks .. " stacks.")
+		end
+	end
 end
 
 function AlqoholicTwitch:Tick()
@@ -62,6 +78,31 @@ function AlqoholicTwitch:Tick()
 		DelayAction(function()
 			Control.CastSpell('B')
 		end, 0.5)
+	end
+
+	for i=1,Game.HeroCount() do
+		local hero = Game.Hero(i)
+		local buff = self:GetBuff(hero, "TwitchDeadlyVenom")
+		if hero and hero.isEnemy and self:HasBuff(hero, "TwitchDeadlyVenom") and buff then
+			-- PrintChat("Buff Duration = " .. buff.duration)
+			-- PrintChat("Buff Expire time = " .. buff.expireTime)
+			-- PrintChat("Current Game Tick = " .. GetTickCount())
+			-- PrintChat("Stored Value = " .. twitchE[hero.networkID].tick)
+			-- PrintChat("Stored Stacks = " .. twitchE[hero.networkID].stacks)
+			if buff.duration > 5.98 then
+				if twitchE[hero.networkID].stacks ~= 6 then
+					twitchE[hero.networkID].stacks = twitchE[hero.networkID].stacks + 1
+					twitchE[hero.networkID].tick = GetTickCount()
+				else
+					twitchE[hero.networkID].stacks = 6
+					twitchE[hero.networkID].tick = GetTickCount()
+					PrintChat(hero.charName .. " Has " .. twitchE[hero.networkID].stacks .. " Stacks")
+				end
+			elseif buff.duration == 0 then
+				twitchE[hero.networkID].stacks = 0
+				twitchE[hero.networkID].tick = 0
+			end
+		end
 	end
 
     if self:Mode() == "Combo" then
@@ -196,8 +237,18 @@ function AlqoholicTwitch:HasBuff(unit, buffname)
     return false
 end
 
+function AlqoholicTwitch:GetBuff(unit, buffname)
+	local buff
+	for K, Buff in pairs(self:GetBuffs(unit)) do
+		if Buff.name:lower() == buffname:lower() then
+			buff = Buff
+			return buff
+		end
+	end
+	return buff
+end
+
 function AlqoholicTwitch:GetEDamage(target)
-	local stacks = self:BuffStacks(target, "TwitchDeadlyVenom")
 
 	local spellLevel = myHero:GetSpellData(_E).level
 
@@ -206,10 +257,14 @@ function AlqoholicTwitch:GetEDamage(target)
 	local adDamage = myHero.totalDamage * 0.25
 	local apDamage = myHero.ap * 0.20
 
+	--local finalDamage = eDamage[spellLevel] + ((stackDamage[spellLevel] + adDamage + apDamage) * (stacks * 3))
+	local finalDamage = (getdmg("E", target, myHero, 1) * twitchE[target.networkID].stacks) * 0.9
+
 	if stacks == 0 then
 		return 0
 	else
-		return eDamage[spellLevel] + ((stackDamage[spellLevel] + adDamage + apDamage) * (stacks * 3))
+		--PrintChat(twitchE[target.networkID].stacks .. " is equal to " .. finalDamage .. " damage")
+		return finalDamage
 	end
 end
 
@@ -276,18 +331,6 @@ end
 function AlqoholicTwitch:Draw()
     if myHero.dead then return end
 
-    if self.Menu.Draw.DrawReady:Value() then
-        if self:IsReady(_W) and self.Menu.Draw.DrawW:Value() then
-            Draw.Circle(myHero.pos,W.Range,1,Draw.Color(255, 255, 255, 255))
-        end
-        if self:IsReady(_E) and self.Menu.Draw.DrawE:Value() then
-            Draw.Circle(myHero.pos,E.Range,1,Draw.Color(255, 255, 255, 255))
-        end
-        if self:IsReady(_R) and self.Menu.Draw.DrawR:Value() then
-            Draw.Circle(myHero.pos,R.Range,1,Draw.Color(255, 255, 255, 255))
-        end
-    end
-
     if self.Menu.Draw.DrawW:Value() then
         Draw.Circle(myHero.pos,W.Range,1,Draw.Color(255, 255, 255, 255))
     end
@@ -297,6 +340,16 @@ function AlqoholicTwitch:Draw()
     if self.Menu.Draw.DrawR:Value() then
         Draw.Circle(myHero.pos,R.Range,1,Draw.Color(255, 255, 255, 255))
     end
+
+    if self.Menu.Draw.DrawEDamage:Value() then
+	    for i=1,Game.HeroCount() do
+	    	local hero = Game.Hero(i)
+	    	if hero and hero.isEnemy and self:IsValidTarget(hero, math.huge) then
+	    		local textPos = hero.pos:To2D()
+	    		Draw.Text("E Stacks = " .. twitchE[hero.networkID].stacks .. " | E Damage = ~" .. self:GetEDamage(hero), 15, textPos.x - 60, textPos.y + 80, Draw.Color(255, 255, 255, 255))
+	    	end
+	    end
+	end
 
     if self.Menu.Draw.DrawTarget:Value() then
         local drawTarget = self:GetTarget(R.Range)
