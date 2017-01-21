@@ -127,9 +127,9 @@ function AlqoholicTwitch:Combo()
 		if useW and self:CanCast(_W) and twitchE[target.networkID].stacks < 6 then
 			local castPos = target:GetPrediction(W.Speed, W.Delay)
 			self:CastW(castPos)
-		elseif useR and self:GetEnemyCount() >= rEnemies then
+		elseif useR and self:GetEnemyCount() >= rEnemies and self:CanCast(_R) then
 			self:CastR()
-		elseif useE then
+		elseif useE and self:CanCast(_E) then
 			self:KS()
 		end
 	end
@@ -147,7 +147,7 @@ function AlqoholicTwitch:Harass()
 		if useW and self:CanCast(_W) and twitchE[target.networkID].stacks < 6 then
 			local castPos = target:GetPrediction(W.Speed, W.Delay)
 			self:CastW(castPos)
-		elseif useE and self:GetStacks(target) >= harassStacks then
+		elseif useE and twitchE[target.networkID].stacks >= harassStacks and self:CanCast(_E) then
 			self:CastE()
 		end
 	end
@@ -188,7 +188,7 @@ function AlqoholicTwitch:KS()
 	    if hero and hero.valid and hero.isEnemy and hero.visible then
 	    	if hero.distance <= E.Range then
 	          	local spellDmg = self:GetEDamage(hero)
-	          	if spellDmg > hero.health then
+	          	if spellDmg > hero.health and self:CanCast(_E) then
 	                self:CastE()
 	            end
 	        end
