@@ -120,7 +120,7 @@ function AlqoholicZed:NormalCombo(target)
             local castPos = target:GetPrediction(W.Speed, W.Delay)
             self:CastW(castPos)
         end
-        if self:CanCast(_Q) and self.Menu.Combo.ComboQ:Value() and target.distance < Q.Range then
+        elseif self:CanCast(_Q) and self.Menu.Combo.ComboQ:Value() and target.distance < Q.Range then
             local castPos = target:GetPrediction(Q.Speed, Q.Delay)
             self.CastQ(castPos)
         elseif self:CanCast(_E) and self.Menu.Combo.ComboE:Value() and target.distance < E.Range then
@@ -196,46 +196,47 @@ function AlqoholicZed:AlqoholicCombo(target)
 end
 
 function AlqoholicZed:Harass(target)
-    if not target and not self:IsValidTarget(target, W.Range + Q.Range) and (myHero.mana/myHero.maxMana >= self.Menu.Harass.HarassEnergy:Value() / 100) then return end
+    if not (myHero.mana/myHero.maxMana >= self.Menu.Harass.HarassEnergy:Value() / 100) then return end
+    if target and self:IsValidTarget(target, W.Range + Q.Range) then
+        local targetPos = target.pos
+        local harassQ = self.Menu.Harass.HarassQ:Value()
+        local harassW = self.Menu.Harass.HarassW:Value()
+        local harassE = self.Menu.Harass.HarassE:Value()
+        local longHarass = self.Menu.Harass.LongHarass:Value()
 
-    local targetPos = target.pos
-    local harassQ = self.Menu.Harass.HarassQ:Value()
-    local harassW = self.Menu.Harass.HarassW:Value()
-    local harassE = self.Menu.Harass.HarassE:Value()
-    local longHarass = self.Menu.Harass.LongHarass:Value()
-
-    if longHarass then
-        if self:CanCast(_Q) and harassQ and self:CanCast(_W) and harassW and myHero:GetSpellData(_W).name ~= "ZedW2" then
-            if self:CanCast(_E) and harassE and target.distance < W.Range + E.Range then
+        if longHarass then
+            if self:CanCast(_Q) and harassQ and self:CanCast(_W) and harassW and myHero:GetSpellData(_W).name ~= "ZedW2" then
+                if self:CanCast(_E) and harassE and target.distance < W.Range + E.Range then
+                    local qPos = target:GetPrediction(Q.Speed, Q.Delay)
+                    local wPos = target:GetPrediction(W.Speed, W.Delay)
+                    self:CastW(wPos)
+                    DelayAction(function()
+                        self:CastE()
+                    end, 0.5)
+                    DelayAction(function()
+                        self:CastQ(qPos)
+                    end, 0.75)
+                else
+                    local qPos = target:GetPrediction(Q.Speed, Q.Delay)
+                    local wPos = target:GetPrediction(W.Speed, W.Delay)
+                    self:CastW(wPos)
+                    DelayAction(function()
+                        self:CastQ(qPos)
+                    end, 0.75)
+                end
+            elseif target.distance < Q.Range and self:CanCast(_Q) then
                 local qPos = target:GetPrediction(Q.Speed, Q.Delay)
-                local wPos = target:GetPrediction(W.Speed, W.Delay)
-                self:CastW(wPos)
-                DelayAction(function()
-                    self:CastE()
-                end, 0.5)
-                DelayAction(function()
-                    self:CastQ(qPos)
-                end, 0.75)
-            else
-                local qPos = target:GetPrediction(Q.Speed, Q.Delay)
-                local wPos = target:GetPrediction(W.Speed, W.Delay)
-                self:CastW(wPos)
-                DelayAction(function()
-                    self:CastQ(qPos)
-                end, 0.75)
+                self:CastQ(qPos)
             end
-        elseif target.distance < Q.Range and self:CanCast(_Q) then
-            local qPos = target:GetPrediction(Q.Speed, Q.Delay)
-            self:CastQ(qPos)
         end
-    end
-    if not longHarass then
-        if target.disance < Q.Range and self:CanCast(_Q) and harassQ then
-            local qPos = target:GetPrediction(Q.Speed, Q.Delay)
-            self:CastQ(qPos)
-        end
-        if target.distance < E.Range and self:CanCast(_E) and harassE then
-            self:CastE()
+        if not longHarass then
+            if target.disance < Q.Range and self:CanCast(_Q) and harassQ then
+                local qPos = target:GetPrediction(Q.Speed, Q.Delay)
+                self:CastQ(qPos)
+            end
+            if target.distance < E.Range and self:CanCast(_E) and harassE then
+                self:CastE()
+            end
         end
     end
 end
