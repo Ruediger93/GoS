@@ -155,6 +155,26 @@ function AlqoholicLeeSin:Farm()
 	end
 end
 
+function AlqoholicLeeSin:KickFlash()
+	if self:CanCast(_R) then
+		local kickTarget
+		local flashPos = myHero.pos:Extend(mousePos, -1000)
+		for i=1,Game.HeroCount() do
+			local hero = Game.Game.Hero(i)
+			if hero and self:IsValidTarget(hero, R.Range) and hero.pos:DistanceTo(mousePos) < 100 then
+				kickTarget = hero
+			end
+		end
+
+		self:CastR(kickTarget)
+		if SUMMONER_1.name == "SummonerFlash" then
+			Control.CastSpell(HK_SUMMONER_1, flashPos)
+		elseif SUMMONER_2.name == "SummonerFlash" then
+			Control.CastSpell(HK_SUMMONER_2, flashPos)
+		end
+	end
+end
+
 function AlqoholicLeeSin:WardJump(position)
 	local unit = self:GetJumpUnit(150) --FIX ME
 	if unit and myHero:GetSpellData(_W).name ~= W2.Name then
