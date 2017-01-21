@@ -86,6 +86,10 @@ function AlqoholicSkeleton:Farm()
     -- FARM LOGIC HERE
 end
 
+function AlqoholicSkeleton:LastHit()
+    -- LASTHIT LOGIC HERE
+end
+
 function AlqoholicSkeleton:CastQ(position)
     if position then
         Control.CastSpell(HK_Q, position)
