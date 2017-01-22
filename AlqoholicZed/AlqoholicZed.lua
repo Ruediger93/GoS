@@ -119,7 +119,6 @@ function AlqoholicZed:NormalCombo(target)
         elseif myHero:GetSpellData(_W).name ~= "ZedW2" and self:CanCast(_W) and self.Menu.Combo.ComboW:Value() then
             local castPos = target:GetPrediction(W.Speed, W.Delay)
             self:CastW(castPos)
-        end
         elseif self:CanCast(_Q) and self.Menu.Combo.ComboQ:Value() and target.distance < Q.Range then
             local castPos = target:GetPrediction(Q.Speed, Q.Delay)
             self.CastQ(castPos)
