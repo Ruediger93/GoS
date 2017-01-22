@@ -158,20 +158,22 @@ end
 function AlqoholicLeeSin:KickFlash()
 	if self:CanCast(_R) then
 		local kickTarget
-		local flashPos = myHero.pos:Extend(mousePos, -1000)
+		local flashPos = myHero.pos:Extend(mousePos, 300)
 		for i=1,Game.HeroCount() do
-			local hero = Game.Game.Hero(i)
+			local hero = Game.Hero(i)
 			if hero and self:IsValidTarget(hero, R.Range) and hero.pos:DistanceTo(mousePos) < 100 then
 				kickTarget = hero
 			end
 		end
 
 		self:CastR(kickTarget)
-		if SUMMONER_1.name == "SummonerFlash" then
-			Control.CastSpell(HK_SUMMONER_1, flashPos)
-		elseif SUMMONER_2.name == "SummonerFlash" then
-			Control.CastSpell(HK_SUMMONER_2, flashPos)
-		end
+		DelayAction(function()
+			if SUMMONER_1.name == "SummonerFlash" then
+				Control.CastSpell(HK_SUMMONER_1, flashPos)
+			elseif SUMMONER_2.name == "SummonerFlash" then
+				Control.CastSpell(HK_SUMMONER_2, flashPos)
+			end
+		end, 0.2)
 	end
 end
 
