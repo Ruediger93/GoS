@@ -168,9 +168,9 @@ function AlqoholicLeeSin:KickFlash()
 
 		self:CastR(kickTarget)
 		DelayAction(function()
-			if SUMMONER_1.name == "SummonerFlash" then
+			if myHero:GetSpellData(SUMMONER_1).name == "SummonerFlash" then
 				Control.CastSpell(HK_SUMMONER_1, flashPos)
-			elseif SUMMONER_2.name == "SummonerFlash" then
+			elseif myHero:GetSpellData(SUMMONER_2).name == "SummonerFlash" then
 				Control.CastSpell(HK_SUMMONER_2, flashPos)
 			end
 		end, 0.2)
